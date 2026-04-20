@@ -12,9 +12,7 @@ Ringkasan penelitian dapat diakses melalui GitHub Pages:
 
 https://zerocool979.github.io/Artificial-Intelligence/
 
-Halaman tersebut menampilkan ringkasan hasil penelitian dalam bentuk halaman HTML interaktif berbasis file:
-
-Summary/index.html
+Halaman tersebut menampilkan ringkasan hasil penelitian dalam bentuk halaman HTML interaktif berbasis file: `Summary/index.html`
 
 ---
 
@@ -100,19 +98,6 @@ RT.03/RW.03, Margajaya
 Kecamatan Bogor Barat  
 Kota Bogor, Jawa Barat 16116  
 Indonesia  
-
-Tahun Penelitian:  
-2026  
-
----
-
-## Ringkasan Penelitian
-
-Ringkasan penelitian disajikan dalam bentuk halaman HTML yang berisi poin-poin penting dari hasil analisis. Halaman ini digunakan sebagai media presentasi visual untuk mempermudah pemahaman terhadap konsep utama yang dibahas dalam laporan penelitian.
-
-Halaman ringkasan dapat diakses melalui:
-
-https://zerocool979.github.io/Artificial-Intelligence/
 
 ---
 
