@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analisis Komparatif: GPT-4 vs BERT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Chosen Palette: Academic Slate & Neutral with Blue (GPT) and Amber (BERT) Accents -->
+    <!-- Application Structure Plan: A dashboard-style SPA with a fixed sidebar navigation. This allows users to non-linearly explore the complex academic report. Sections are broken down logically: Introduction -> Theoretical Foundation -> Deep Comparison (with interactive chart & table) -> Practical Use Cases -> Conclusion. This structure prevents cognitive overload compared to reading a 15-page linear document, allowing quick access to specific technical details or high-level summaries. -->
+    <!-- Visualization & Content Choices: 1. Radar Chart (Chart.js): Compares abstract capabilities (NLU, Generation, Efficiency) to provide an immediate visual summary of strengths. 2. HTML/CSS Architecture Diagram: Visually contrasts Encoder vs Decoder without using SVGs, using interactive hover states to explain layers. 3. Interactive Data Table: Allows structured comparison of technical specs. 4. Accordions/Toggle lists: For Pros/Cons to keep the interface clean while housing dense textual information. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        /* Base typography & styling */
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; color: #0f172a; }
+        
+        /* Chart Container Requirements */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            padding: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container { height: 400px; max-width: 700px; }
+        }
+
+        /* Custom UI Elements (NO SVG icons used, utilizing CSS shapes/Unicode) */
+        .nav-item.active { background-color: #e2e8f0; border-left: 4px solid #3b82f6; font-weight: 600; }
+        .nav-item { transition: all 0.2s ease; cursor: pointer; }
+        .nav-item:hover:not(.active) { background-color: #f1f5f9; }
+        
+        .section-content { display: none; animation: fadeIn 0.4s ease-in-out; }
+        .section-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* CSS Architecture Diagram Blocks */
+        .arch-block { transition: transform 0.2s, box-shadow 0.2s; cursor: help; }
+        .arch-block:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); }
+        .tooltip-text { display: none; position: absolute; z-index: 10; bottom: 100%; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; width: 200px; text-align: center; margin-bottom: 5px; }
+        .arch-block:hover .tooltip-text { display: block; }
+
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        .accordion-content.open { max-height: 500px; /* arbitrary large height */ }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+
+    <!-- Sidebar Navigation -->
+    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col h-full shrink-0 z-20 shadow-sm relative">
+        <div class="p-6 border-b border-slate-100">
+            <h1 class="text-xl font-bold text-slate-800 leading-tight">Analisis Komparatif<br><span class="text-blue-600">GPT-4</span> & <span class="text-amber-500">BERT</span></h1>
+            <p class="text-xs text-slate-500 mt-2">Laporan Interaktif Akademis</p>
+        </div>
+        <nav class="flex-1 overflow-y-auto py-4">
+            <ul class="space-y-1">
+                <li class="nav-item active px-6 py-3 text-sm text-slate-700" onclick="showSection('bab1')">&#128214; BAB I: Pendahuluan</li>
+                <li class="nav-item px-6 py-3 text-sm text-slate-700" onclick="showSection('bab2')">&#129504; BAB II: Landasan Teori</li>
+                <li class="nav-item px-6 py-3 text-sm text-slate-700" onclick="showSection('bab3')">&#128202; BAB III: Analisis & Perbandingan</li>
+                <li class="nav-item px-6 py-3 text-sm text-slate-700" onclick="showSection('bab4')">&#128188; Studi Kasus</li>
+                <li class="nav-item px-6 py-3 text-sm text-slate-700" onclick="showSection('bab5')">&#128221; BAB IV: Penutup & Referensi</li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-y-auto bg-slate-50 h-full relative scroll-smooth p-8 lg:p-12">
+        <div class="max-w-5xl mx-auto">
+
+            <!-- BAB I: PENDAHULUAN -->
+            <section id="bab1" class="section-content active">
+                <header class="mb-8">
+                    <span class="text-sm font-bold tracking-wider text-blue-600 uppercase">Bab I</span>
+                    <h2 class="text-3xl font-extrabold text-slate-900 mt-1 mb-4">Pendahuluan</h2>
+                    <p class="text-lg text-slate-600 leading-relaxed">Bagian ini menguraikan latar belakang evolusi Kecerdasan Buatan (AI), khususnya Pemrosesan Bahasa Alami (NLP), serta merumuskan masalah dan tujuan analisis komparatif antara dua model fundamental: GPT-4 dan BERT.</p>
+                </header>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                        <h3 class="text-lg font-bold text-slate-800 border-b pb-2 mb-3">1.1 Latar Belakang</h3>
+                        <p class="text-sm text-slate-600 text-justify">Perkembangan <i>Artificial Intelligence</i> (AI), khususnya sub-bidang <i>Natural Language Processing</i> (NLP), telah mengalami revolusi signifikan dalam dekade terakhir. Transisi dari model berbasis aturan linguistik menuju pendekatan <i>deep learning</i> mencapai puncaknya dengan diperkenalkannya arsitektur <b>Transformer</b> pada tahun 2017. Dalam ekosistem modern, dua varian dari arsitektur ini mendominasi: model berbasis <i>Encoder</i> seperti <b>BERT</b> yang merevolusi pemahaman pencarian, dan model berbasis <i>Decoder</i> seperti <b>GPT-4</b> yang mendorong batas generasi teks otonom. Memahami perbedaan arsitektural dan fungsional keduanya sangat penting untuk implementasi teknologi yang tepat guna.</p>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                        <h3 class="text-lg font-bold text-slate-800 border-b pb-2 mb-3">1.2 Rumusan Masalah</h3>
+                        <ul class="list-disc pl-5 text-sm text-slate-600 space-y-2">
+                            <li>Apa definisi, konsep dasar, dan arsitektur yang mendasari model GPT-4 dan BERT?</li>
+                            <li>Bagaimana mekanisme kerja internal dari kedua model tersebut dalam memproses dan menghasilkan representasi bahasa?</li>
+                            <li>Apa saja perbedaan fundamental, keunggulan kompetitif, serta limitasi dari masing-masing model dalam penerapan praktis?</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 border-l-4 border-l-blue-500">
+                        <h3 class="text-md font-bold text-slate-800 mb-2">1.3 Tujuan Penelitian</h3>
+                        <p class="text-sm text-slate-600">Tujuan utama analisis ini adalah untuk mengkaji secara komprehensif landasan teoritis, mekanisme operasional, serta melakukan komparasi mendalam antara model GPT-4 dan BERT guna memberikan panduan akademis dan praktis dalam pemilihan arsitektur NLP.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 border-l-4 border-l-amber-500">
+                        <h3 class="text-md font-bold text-slate-800 mb-2">1.4 Manfaat Penelitian</h3>
+                        <p class="text-sm text-slate-600"><b>Akademis:</b> Menambah literatur komparatif mengenai arsitektur Transformer modern. <br><b>Praktis:</b> Membantu praktisi, pengembang perangkat lunak, dan analis data dalam menentukan model yang paling efisien untuk berbagai <i>use-case</i> spesifik seperti klasifikasi teks atau generasi konten.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BAB II: LANDASAN TEORI -->
+            <section id="bab2" class="section-content">
+                <header class="mb-8">
+                    <span class="text-sm font-bold tracking-wider text-blue-600 uppercase">Bab II</span>
+                    <h2 class="text-3xl font-extrabold text-slate-900 mt-1 mb-4">Landasan Teori</h2>
+                    <p class="text-lg text-slate-600 leading-relaxed">Eksplorasi konsep dasar AI, NLP, dan anatomi arsitektur Transformer yang menjadi fondasi bagi GPT-4 (Generatif) dan BERT (Representasi Dua Arah). Jelajahi interaksi di bawah ini untuk memahami struktur internal mereka.</p>
+                </header>
+
+                <div class="mb-8 bg-slate-800 text-white p-6 rounded-xl shadow-md">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <h3 class="font-bold text-blue-300 mb-2">2.1 Artificial Intelligence</h3>
+                            <p class="text-sm text-slate-300">Cabang ilmu komputer yang menekankan pengembangan intelijensi mesin, pola pikir, dan cara bekerja layaknya manusia (Russell & Norvig, 2016). Berfokus pada pembelajaran, penalaran, dan koreksi diri.</p>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-blue-300 mb-2">2.2 Pemrosesan Bahasa Alami</h3>
+                            <p class="text-sm text-slate-300">Persimpangan antara ilmu komputer, AI, dan linguistik. NLP memungkinkan komputer untuk memahami, menginterpretasikan, dan memanipulasi bahasa manusia secara bermakna.</p>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-blue-300 mb-2">2.3 Arsitektur Transformer</h3>
+                            <p class="text-sm text-slate-300">Diperkenalkan Google (2017). Menggantikan arsitektur rekursif (RNN/LSTM) dengan <i>Self-Attention Mechanism</i>, memungkinkan pemrosesan kata secara paralel dan pemahaman konteks jarak jauh.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200 mb-8">
+                    <h3 class="text-xl font-bold text-slate-800 mb-6 text-center border-b pb-4">Anatomi Arsitektural (Visualisasi Konseptual)</h3>
+                    
+                    <div class="flex flex-col md:flex-row justify-center items-stretch gap-8">
+                        <!-- BERT Column -->
+                        <div class="flex-1 flex flex-col items-center">
+                            <div class="bg-amber-100 text-amber-800 font-bold px-4 py-2 rounded mb-4 text-center w-full border border-amber-300">
+                                2.5 BERT (Bidirectional Encoder)
+                            </div>
+                            <p class="text-xs text-center text-slate-500 mb-4 h-12">Membaca seluruh kalimat secara bersamaan (kiri ke kanan & kanan ke kiri) untuk memahami konteks absolut suatu kata.</p>
+                            
+                            <!-- Diagram -->
+                            <div class="flex flex-col gap-2 w-48 relative">
+                                <div class="text-center text-xs font-bold text-slate-500 mb-1">Output (Representasi Kata)</div>
+                                <div class="arch-block relative bg-slate-100 border-2 border-amber-400 p-3 rounded text-center text-sm font-semibold">
+                                    Encoder Block N
+                                    <span class="tooltip-text">Mengekstraksi fitur kompleks dari representasi tingkat bawah menggunakan Self-Attention.</span>
+                                </div>
+                                <div class="text-center text-slate-400 text-xs">&#8593; &#8593; &#8593;</div>
+                                <div class="arch-block relative bg-slate-100 border-2 border-amber-400 p-3 rounded text-center text-sm font-semibold">
+                                    Encoder Block 1
+                                    <span class="tooltip-text">Menerapkan Multi-Head Attention dua arah (Bidirectional). Setiap kata 'melihat' kata sebelum dan sesudahnya.</span>
+                                </div>
+                                <div class="text-center text-slate-400 text-xs">&#8593; &#8593; &#8593;</div>
+                                <div class="arch-block relative bg-slate-200 p-2 rounded text-center text-xs">
+                                    Embedding Layer
+                                    <span class="tooltip-text">Mengubah teks input menjadi vektor numerik + Positional Encoding.</span>
+                                </div>
+                                <div class="text-center text-xs font-bold text-slate-500 mt-2">Input (Teks Penuh)</div>
+                            </div>
+                        </div>
+
+                        <!-- Divider -->
+                        <div class="hidden md:flex items-center justify-center">
+                            <div class="h-full w-px bg-slate-200"></div>
+                        </div>
+
+                        <!-- GPT Column -->
+                        <div class="flex-1 flex flex-col items-center">
+                            <div class="bg-blue-100 text-blue-800 font-bold px-4 py-2 rounded mb-4 text-center w-full border border-blue-300">
+                                2.4 GPT-4 (Generative Decoder)
+                            </div>
+                            <p class="text-xs text-center text-slate-500 mb-4 h-12">Memprediksi token (kata) selanjutnya berdasarkan urutan kata sebelumnya. Bersifat searah (kiri ke kanan).</p>
+                            
+                            <!-- Diagram -->
+                            <div class="flex flex-col gap-2 w-48 relative">
+                                <div class="text-center text-xs font-bold text-slate-500 mb-1">Output (Prediksi Kata Berikutnya)</div>
+                                <div class="arch-block relative bg-slate-100 border-2 border-blue-400 p-3 rounded text-center text-sm font-semibold">
+                                    Decoder Block N
+                                    <span class="tooltip-text">Memproses informasi berjenjang untuk menghasilkan distribusi probabilitas kosakata.</span>
+                                </div>
+                                <div class="text-center text-slate-400 text-xs">&#8593; &#8593; &#8593;</div>
+                                <div class="arch-block relative bg-slate-100 border-2 border-blue-400 p-3 rounded text-center text-sm font-semibold">
+                                    Decoder Block 1
+                                    <span class="tooltip-text">Menggunakan Masked Self-Attention. Model hanya dapat 'melihat' kata-kata sebelumnya (kiri), tidak bisa melihat masa depan (kanan).</span>
+                                </div>
+                                <div class="text-center text-slate-400 text-xs">&#8593; &#8593; &#8593;</div>
+                                <div class="arch-block relative bg-slate-200 p-2 rounded text-center text-xs">
+                                    Embedding Layer
+                                    <span class="tooltip-text">Mengubah teks sekuensial menjadi vektor numerik.</span>
+                                </div>
+                                <div class="text-center text-xs font-bold text-slate-500 mt-2">Input (Konteks Sebelumnya)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BAB III: ANALISIS & PERBANDINGAN -->
+            <section id="bab3" class="section-content">
+                <header class="mb-8">
+                    <span class="text-sm font-bold tracking-wider text-blue-600 uppercase">Bab III</span>
+                    <h2 class="text-3xl font-extrabold text-slate-900 mt-1 mb-4">Analisis & Perbandingan Model</h2>
+                    <p class="text-lg text-slate-600 leading-relaxed">Bagian inti ini membedah metrik kinerja, menyajikan analisis SWOT (Kelebihan & Kekurangan), dan merangkum perbedaan teknis melalui visualisasi data dan tabel komparatif komprehensif.</p>
+                </header>
+
+                <!-- Visualization -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mb-8">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 text-center">Pemetaan Kapabilitas Relatif</h3>
+                    <p class="text-sm text-center text-slate-500 mb-6">Analisis kuantitatif konseptual berdasarkan parameter performa NLP standar (Skala 1-10).</p>
+                    
+                    <div class="chart-container">
+                        <canvas id="comparisonChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Pros/Cons Interactive -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <!-- GPT Analysis -->
+                    <div>
+                        <h3 class="text-xl font-bold text-blue-700 mb-4 flex items-center gap-2">&#9889; Analisis GPT-4</h3>
+                        
+                        <!-- Kelebihan -->
+                        <div class="bg-white border border-blue-100 rounded-lg shadow-sm mb-3 overflow-hidden">
+                            <button class="w-full px-4 py-3 text-left font-bold text-slate-800 bg-blue-50 hover:bg-blue-100 transition flex justify-between items-center" onclick="toggleAccordion('gpt-kelebihan')">
+                                3.1 Kelebihan GPT-4
+                                <span class="text-blue-500">&#9660;</span>
+                            </button>
+                            <div id="gpt-kelebihan" class="accordion-content bg-white px-4">
+                                <ul class="list-disc pl-5 py-3 text-sm text-slate-600 space-y-1">
+                                    <li>Kemampuan penalaran (reasoning) dan logika yang sangat canggih.</li>
+                                    <li>Kreativitas tinggi dalam generasi teks, kode program, dan bahasa formal.</li>
+                                    <li>Pemahaman instruksi kompleks (prompt engineering) yang sangat responsif.</li>
+                                    <li>Kemampuan multimodal (mampu memproses gambar sebagai input teks).</li>
+                                    <li>Konteks memori (context window) yang sangat besar (hingga 128k token).</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Kekurangan -->
+                        <div class="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
+                            <button class="w-full px-4 py-3 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 transition flex justify-between items-center" onclick="toggleAccordion('gpt-kekurangan')">
+                                3.2 Kekurangan GPT-4
+                                <span class="text-slate-400">&#9660;</span>
+                            </button>
+                            <div id="gpt-kekurangan" class="accordion-content bg-white px-4">
+                                <ul class="list-disc pl-5 py-3 text-sm text-slate-600 space-y-1">
+                                    <li>Rentan terhadap "Halusinasi" (menghasilkan fakta yang salah namun terdengar meyakinkan).</li>
+                                    <li>Biaya inferensi komputasi API yang sangat mahal.</li>
+                                    <li>Model "Black Box" (Closed-source), kurangnya transparansi data pelatihan.</li>
+                                    <li>Overkill (berlebihan) untuk tugas klasifikasi teks sederhana.</li>
+                                    <li>Proses fine-tuning khusus sangat kompleks dan memakan biaya tinggi.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BERT Analysis -->
+                    <div>
+                        <h3 class="text-xl font-bold text-amber-600 mb-4 flex items-center gap-2">&#128269; Analisis BERT</h3>
+                        
+                        <!-- Kelebihan -->
+                        <div class="bg-white border border-amber-100 rounded-lg shadow-sm mb-3 overflow-hidden">
+                            <button class="w-full px-4 py-3 text-left font-bold text-slate-800 bg-amber-50 hover:bg-amber-100 transition flex justify-between items-center" onclick="toggleAccordion('bert-kelebihan')">
+                                3.3 Kelebihan BERT
+                                <span class="text-amber-500">&#9660;</span>
+                            </button>
+                            <div id="bert-kelebihan" class="accordion-content bg-white px-4">
+                                <ul class="list-disc pl-5 py-3 text-sm text-slate-600 space-y-1">
+                                    <li>Pemahaman mendalam tentang makna kata dalam konteks kalimat utuh (Bidirectional).</li>
+                                    <li>Sangat efisien dan akurat untuk tugas klasifikasi dan analisis sentimen.</li>
+                                    <li>Bersifat Open-Source; mudah diunduh, disesuaikan, dan dilatih ulang (fine-tuning) secara lokal.</li>
+                                    <li>Lebih ringan dan efisien untuk dijalankan pada infrastruktur server standar dibandingkan LLM masif.</li>
+                                    <li>Kinerja superior dalam tugas <i>Information Extraction</i> (Named Entity Recognition).</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Kekurangan -->
+                        <div class="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
+                            <button class="w-full px-4 py-3 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 transition flex justify-between items-center" onclick="toggleAccordion('bert-kekurangan')">
+                                3.4 Kekurangan BERT
+                                <span class="text-slate-400">&#9660;</span>
+                            </button>
+                            <div id="bert-kekurangan" class="accordion-content bg-white px-4">
+                                <ul class="list-disc pl-5 py-3 text-sm text-slate-600 space-y-1">
+                                    <li>Tidak dirancang secara natural untuk tugas generasi teks (menulis esai, cerita).</li>
+                                    <li>Keterbatasan panjang konteks input (biasanya terbatas pada 512 token).</li>
+                                    <li>Kurang fleksibel secara "Zero-shot" dibandingkan GPT; biasanya memerlukan fine-tuning spesifik per tugas.</li>
+                                    <li>Tidak memahami instruksi langsung (prompting) sebaik arsitektur GPT.</li>
+                                    <li>Bukan model multimodal (hanya teks murni).</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3.5 Tabel Perbandingan -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-8">
+                    <div class="bg-slate-800 p-4 text-white">
+                        <h3 class="text-lg font-bold">3.5 Tabel Komparasi Fundamental</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-slate-700 uppercase bg-slate-100">
+                                <tr>
+                                    <th scope="col" class="px-6 py-4">Kriteria / Metrik</th>
+                                    <th scope="col" class="px-6 py-4 text-blue-700 border-l">GPT-4</th>
+                                    <th scope="col" class="px-6 py-4 text-amber-700 border-l">BERT</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 text-slate-600">
+                                <tr class="hover:bg-slate-50">
+                                    <td class="px-6 py-4 font-bold text-slate-800">Tujuan Utama</td>
+                                    <td class="px-6 py-4 border-l">Generasi Teks (Meneruskan kalimat)</td>
+                                    <td class="px-6 py-4 border-l">Pemahaman Representasi (Ekstraksi Makna)</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="px-6 py-4 font-bold text-slate-800">Arsitektur Dasar</td>
+                                    <td class="px-6 py-4 border-l">Transformer Decoder-only (Auto-regressive)</td>
+                                    <td class="px-6 py-4 border-l">Transformer Encoder-only (Auto-encoding)</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="px-6 py-4 font-bold text-slate-800">Cara Kerja Konteks</td>
+                                    <td class="px-6 py-4 border-l">Searah (Unidirectional, kiri-ke-kanan)</td>
+                                    <td class="px-6 py-4 border-l">Dua Arah (Bidirectional, melihat seluruh konteks)</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="px-6 py-4 font-bold text-slate-800">Keunggulan Utama</td>
+                                    <td class="px-6 py-4 border-l">Kreativitas, penalaran abstrak, zero-shot learning</td>
+                                    <td class="px-6 py-4 border-l">Akurasi tinggi klasifikasi teks, penelusuran semantik</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="px-6 py-4 font-bold text-slate-800">Kelemahan Utama</td>
+                                    <td class="px-6 py-4 border-l">Biaya operasional tinggi, potensi halusinasi</td>
+                                    <td class="px-6 py-4 border-l">Buruk dalam menghasilkan teks panjang, limit konteks</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="px-6 py-4 font-bold text-slate-800">Aksesibilitas</td>
+                                    <td class="px-6 py-4 border-l">Proprietary / API Berbayar (OpenAI)</td>
+                                    <td class="px-6 py-4 border-l">Open-Source (Dapat diunduh gratis di HuggingFace)</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="px-6 py-4 font-bold text-slate-800">Performa Umum</td>
+                                    <td class="px-6 py-4 border-l">State-of-the-Art (SOTA) untuk asisten AI multifungsi</td>
+                                    <td class="px-6 py-4 border-l">Sangat efisien untuk tugas spesifik backend NLP</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BAB IV: STUDI KASUS -->
+            <section id="bab4" class="section-content">
+                <header class="mb-8">
+                    <span class="text-sm font-bold tracking-wider text-blue-600 uppercase">Implementasi Praktis</span>
+                    <h2 class="text-3xl font-extrabold text-slate-900 mt-1 mb-4">3.6 Studi Kasus Penggunaan</h2>
+                    <p class="text-lg text-slate-600 leading-relaxed">Teori yang dipelajari diterjemahkan ke dalam implementasi dunia nyata. Kartu-kartu di bawah ini menunjukkan skenario optimal untuk pengerahan masing-masing model berdasarkan kekuatan arsitekturnya.</p>
+                </header>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- GPT Use Cases -->
+                    <div class="space-y-6">
+                        <div class="bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-200 shadow-sm relative overflow-hidden">
+                            <div class="absolute top-0 right-0 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">Ideal: GPT-4</div>
+                            <div class="text-3xl mb-3">&#129302;</div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-2">Asisten Chatbot Percakapan Kompleks</h4>
+                            <p class="text-sm text-slate-600 mb-3"><b>Skenario:</b> Sistem <i>Customer Service</i> tingkat lanjut yang perlu memahami keluhan pelanggan yang panjang, mencari solusi abstrak, dan merespons dengan nada yang empatik dan alami.</p>
+                            <p class="text-xs text-blue-700 bg-blue-100 p-2 rounded"><b>Alasan:</b> Kemampuan <i>Decoder</i> menghasilkan teks yang fluen dan memori konteks percakapan yang panjang.</p>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-200 shadow-sm relative overflow-hidden">
+                            <div class="absolute top-0 right-0 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">Ideal: GPT-4</div>
+                            <div class="text-3xl mb-3">&#128187;</div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-2">Otomatisasi Penulisan Kode & Konten</h4>
+                            <p class="text-sm text-slate-600 mb-3"><b>Skenario:</b> Alat bantu programmer (seperti GitHub Copilot) untuk menulis baris kode berdasarkan instruksi teks, atau pembuatan artikel blog SEO secara otomatis.</p>
+                            <p class="text-xs text-blue-700 bg-blue-100 p-2 rounded"><b>Alasan:</b> Kemampuan logika (reasoning) kuat dan <i>zero-shot generation</i> lintas bahasa pemrograman.</p>
+                        </div>
+                    </div>
+
+                    <!-- BERT Use Cases -->
+                    <div class="space-y-6">
+                        <div class="bg-gradient-to-br from-amber-50 to-white p-6 rounded-xl border border-amber-200 shadow-sm relative overflow-hidden">
+                            <div class="absolute top-0 right-0 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">Ideal: BERT</div>
+                            <div class="text-3xl mb-3">&#128269;</div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-2">Mesin Pencari Berbasis Semantik</h4>
+                            <p class="text-sm text-slate-600 mb-3"><b>Skenario:</b> Peningkatan algoritma pencarian internal perusahaan, di mana pencarian mencocokkan "makna" kueri pengguna dengan dokumen, bukan sekadar mencocokkan kata kunci eksak.</p>
+                            <p class="text-xs text-amber-700 bg-amber-100 p-2 rounded"><b>Alasan:</b> Analisis dua arah (Bidirectional) memahami relasi antar kata dan nuansa kalimat dengan presisi tinggi.</p>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-amber-50 to-white p-6 rounded-xl border border-amber-200 shadow-sm relative overflow-hidden">
+                            <div class="absolute top-0 right-0 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">Ideal: BERT</div>
+                            <div class="text-3xl mb-3">&#128202;</div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-2">Analisis Sentimen Ulasan Massal</h4>
+                            <p class="text-sm text-slate-600 mb-3"><b>Skenario:</b> Memproses jutaan ulasan produk e-commerce setiap malam untuk mengklasifikasikannya ke dalam kategori "Positif", "Negatif", atau "Netral" untuk laporan dasbor bisnis.</p>
+                            <p class="text-xs text-amber-700 bg-amber-100 p-2 rounded"><b>Alasan:</b> Sangat cepat untuk klasifikasi teks spesifik dan murah dijalankan pada infrastruktur cloud standar.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BAB V: PENUTUP & DAFTAR PUSTAKA -->
+            <section id="bab5" class="section-content">
+                <header class="mb-8">
+                    <span class="text-sm font-bold tracking-wider text-slate-500 uppercase">Bab IV</span>
+                    <h2 class="text-3xl font-extrabold text-slate-900 mt-1 mb-4">Penutup & Referensi</h2>
+                    <p class="text-lg text-slate-600 leading-relaxed">Kesimpulan strategis dari laporan komparatif ini dan literatur akademis yang mendukung analisis.</p>
+                </header>
+
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200 mb-8">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2">4.1 Kesimpulan</h3>
+                    <p class="text-sm text-slate-700 leading-relaxed mb-4 text-justify">
+                        Analisis terhadap GPT-4 dan BERT mengungkapkan bahwa tidak ada model superior absolut dalam lanskap NLP; pemilihan model bergantung sepenuhnya pada karakteristik tugas (task-dependency). <b>GPT-4 (Decoder)</b> merepresentasikan puncak rekayasa AI generatif, menawarkan fleksibilitas luar biasa untuk tugas yang membutuhkan penalaran dinamis, interaksi mirip manusia, dan generasi teks dari nol. Namun, keunggulan ini datang dengan kompleksitas infrastruktur, biaya tinggi, dan risiko halusinasi. 
+                    </p>
+                    <p class="text-sm text-slate-700 leading-relaxed text-justify">
+                        Di sisi lain, <b>BERT (Encoder)</b> tetap menjadi standar industri (SOTA) untuk tugas ekstraksi informasi, pemahaman semantik mendalam, dan klasifikasi terarah. Pendekatan dua arahnya membedah struktur kalimat dengan efisiensi yang tidak dapat ditandingi oleh model generatif dalam konteks biaya-terhadap-performa (cost-to-performance ratio).
+                    </p>
+
+                    <h3 class="text-lg font-bold text-slate-800 mt-6 mb-3">4.2 Saran Penggunaan Masa Depan</h3>
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 text-sm text-slate-700 italic">
+                        "Disarankan bagi organisasi untuk mengadopsi pendekatan <b>Hybrid</b>. Gunakan BERT (atau variannya seperti RoBERTa) sebagai lapisan pertama (backend) untuk klasifikasi, penyaringan, dan ekstraksi data berat secara murah dan cepat. Kemudian, teruskan data yang telah diproses ke API GPT-4 (frontend) hanya ketika pengguna membutuhkan ringkasan naratif, penjelasan interaktif, atau pembuatan draf akhir. Pendekatan ini menyeimbangkan kecanggihan kognitif dengan efisiensi operasional."
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4">Daftar Pustaka</h3>
+                    <ul class="list-decimal pl-5 text-xs text-slate-600 space-y-2">
+                        <li>Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., ... & Polosukhin, I. (2017). Attention is all you need. <i>Advances in neural information processing systems</i>, 30.</li>
+                        <li>Devlin, J., Chang, M. W., Lee, K., & Toutanova, K. (2018). BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding. <i>arXiv preprint arXiv:1810.04805</i>.</li>
+                        <li>OpenAI. (2023). GPT-4 Technical Report. <i>arXiv preprint arXiv:2303.08774</i>.</li>
+                        <li>Russell, S., & Norvig, P. (2016). <i>Artificial intelligence: a modern approach</i>. Pearson.</li>
+                        <li>Jurafsky, D., & Martin, J. H. (2023). <i>Speech and Language Processing</i>. Stanford University. (Draft ed.).</li>
+                        <li>Hugging Face. (2023). <i>The Hugging Face Course: Transformers Architecture</i>. Tersedia di: huggingface.co/course</li>
+                        <li>StatQuest with Josh Starmer. (2022). <i>Transformer Neural Networks, ChatGPT's foundation, Clearly Explained!!!</i> [Video YouTube].</li>
+                        <li>Towards Data Science. (2023). <i>Encoder vs Decoder in Transformers: An intuitive understanding</i>. Medium Blog.</li>
+                    </ul>
+                </div>
+                
+                <!-- Footer Spacer -->
+                <div class="h-24"></div> 
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // --- Navigation Logic ---
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            // Show target section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Update nav active state
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            // Scroll to top of main area
+            document.querySelector('main').scrollTo(0, 0);
+
+            // Re-render chart if navigating to Bab 3 to ensure proper canvas sizing
+            if(sectionId === 'bab3') {
+                initRadarChart();
+            }
+        }
+
+        // --- Accordion Logic ---
+        function toggleAccordion(id) {
+            const content = document.getElementById(id);
+            const buttonIcon = content.previousElementSibling.querySelector('span');
+            
+            if (content.classList.contains('open')) {
+                content.classList.remove('open');
+                buttonIcon.innerHTML = '&#9660;'; // Down arrow
+            } else {
+                content.classList.add('open');
+                buttonIcon.innerHTML = '&#9650;'; // Up arrow
+            }
+        }
+
+        // --- Chart.js Radar Chart Logic ---
+        let comparisonChartInstance = null;
+
+        function initRadarChart() {
+            const ctx = document.getElementById('comparisonChart').getContext('2d');
+            
+            if(comparisonChartInstance) {
+                comparisonChartInstance.destroy(); // Destroy previous instance to prevent rendering issues
+            }
+
+            const data = {
+                labels: [
+                    'Pemahaman Konteks & Makna (NLU)',
+                    'Kemampuan Generasi Teks',
+                    'Efisiensi Komputasi & Biaya',
+                    'Skalabilitas (Fine-tuning Lokal)',
+                    'Penalaran Logis & Abstrak'
+                ],
+                datasets: [
+                    {
+                        label: 'GPT-4 (Generatif)',
+                        data: [8, 10, 3, 2, 10], // Mock scores 1-10
+                        fill: true,
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)', // Blue
+                        borderColor: 'rgb(59, 130, 246)',
+                        pointBackgroundColor: 'rgb(59, 130, 246)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(59, 130, 246)'
+                    },
+                    {
+                        label: 'BERT (Representasi)',
+                        data: [10, 3, 8, 9, 5], // Mock scores 1-10
+                        fill: true,
+                        backgroundColor: 'rgba(245, 158, 11, 0.2)', // Amber
+                        borderColor: 'rgb(245, 158, 11)',
+                        pointBackgroundColor: 'rgb(245, 158, 11)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(245, 158, 11)'
+                    }
+                ]
+            };
+
+            const config = {
+                type: 'radar',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', labels: { font: { family: 'Segoe UI', size: 12 } } },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleFont: { size: 13, family: 'Segoe UI' },
+                            bodyFont: { size: 12, family: 'Segoe UI' }
+                        }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(0, 0, 0, 0.1)' },
+                            grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                            pointLabels: {
+                                font: { size: 11, family: 'Segoe UI', weight: '600' },
+                                color: '#475569'
+                            },
+                            ticks: {
+                                display: false, // Hide numeric ticks on axes for cleaner look
+                                min: 0,
+                                max: 10
+                            }
+                        }
+                    }
+                },
+            };
+
+            comparisonChartInstance = new Chart(ctx, config);
+        }
+
+        // Initialize chart on first load if bab3 is visible, though bab1 is default.
+        // It will trigger when user clicks Bab 3 via showSection.
+    </script>
+</body>
+</html>
