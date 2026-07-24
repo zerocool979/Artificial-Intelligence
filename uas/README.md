@@ -2,9 +2,7 @@
 ---
 *Chatbot knowledge base berbasis **RAG (Retrieval-Augmented Generation)** yang menjawab pertanyaan pengguna forum **OLION** hanya berdasarkan dokumen internal yang telah di-ingest* oleh admin — bukan dari pengetahuan umum model bahasa.
 
-![Olion Logo](olion.png)
-
-![LIA Logo](lia.png)
+![Olion X Lia Logo](olionXlia.png)
 
 ![Node.js](https://img.shields.io/badge/Node.js-Express-339933?logo=node.js&logoColor=white)
 ![Next.js](https://img.shields.io/badge/Frontend-Next.js-000000?logo=next.js&logoColor=white)
@@ -16,7 +14,10 @@
 ![License](https://img.shields.io/badge/status-internal%20module-lightgrey)
 
 ---
-Akses di [https://olion.vercel.app](https://olion.vercel.app)
+
+Akses Root Project: [olion](https://github.com/zerocool979/olion/)
+
+Akses Deployment di [https://olion.vercel.app](https://olion.vercel.app)
 
 | email          | password     |
 | -------------- | ------------ |
@@ -143,7 +144,7 @@ Tiga entitas inti — `Document`, `Chunk`, `ChatLog` — terhubung ke entitas `U
 
 ## Struktur Modul & Deskripsi File
 
-### Backend — Inti RAG (`backend/src/modules/lia/`)
+### Backend — Inti RAG [`backend/src/modules/lia/`](https://github.com/zerocool979/olion/tree/main/backend/src/modules/lia)
 
 | File | Peran |
 |---|---|

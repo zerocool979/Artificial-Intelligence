@@ -1,7 +1,7 @@
 # Artificial Intelligence
 ---
 ## Deskripsi
-Repository ini berisi hasil tugas UTS dan UAS dari matakuliah AI. Setiap laporan akhir berada dalam folder `'result/'`
+Repository ini berisi hasil tugas UTS dan UAS dari matakuliah AI. Khusus Laporan akhir UTS berada dalam folder `'result/'`
 ---
 ## Author
 **Bilal**  
